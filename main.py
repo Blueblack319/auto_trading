@@ -1,11 +1,11 @@
-from ui.ui import Ui_class
+from ui.ui import UiClass
 
 
 class Main:
     def __init__(self):
         print('실행할 Main 클래스 입니다.')
 
-        Ui_class()
+        UiClass()
 
 
 if __name__ == '__main__':
