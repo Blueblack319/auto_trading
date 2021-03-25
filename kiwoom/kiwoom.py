@@ -10,6 +10,7 @@ class Kiwoom(QAxWidget):
 
         ###### event loop 모음 ########
         self.login_event_loop = None
+        self.detail_account_info_event_loop = None
         ##############################
 
         ########### 변수 모음 ##########
@@ -64,6 +65,9 @@ class Kiwoom(QAxWidget):
         self.dynamicCall('SetInputValue(String, String)', '조회구분', '2')
         self.dynamicCall('CommRqData(String, String, int, String)', '예수금상세현황요청', 'opw00001', '0', '2000')
 
+        self.detail_account_info_event_loop = QEventLoop()
+        self.detail_account_info_event_loop.exec_()
+
     def get_basic_info(self):
         print('종목의 기본정보를 요청하는 부분')
 
@@ -82,10 +86,12 @@ class Kiwoom(QAxWidget):
         '''
 
         if sRQName == '예수금상세현황요청':
-            deposit = self.dynamicCall('GetCommData(String, String, int, String)', sTrCode, sRQName, 0, '예수금')
+            deposit = int(self.dynamicCall('GetCommData(String, String, int, String)', sTrCode, sRQName, 0, '예수금'))
             print(f'예수금: {deposit}')
-            usable_money = self.dynamicCall('GetCommData(String, String, int, String)', sTrCode, sRQName, 0, '주문가능금액')
+            usable_money = int(self.dynamicCall('GetCommData(String, String, int, String)', sTrCode, sRQName, 0, '주문가능금액'))
             print(f'주문가능금액: {usable_money}')
+
+            self.detail_account_info_event_loop.exit()
 
         if sRQName == '주식기본정보요청':
             name = self.dynamicCall('GetCommData(String, String, int, String)', sTrCode, sRQName, 0, '종목명').strip()
@@ -110,5 +116,7 @@ class Kiwoom(QAxWidget):
             print(f'당기순이익: {net_income}')
             print(f'현재가: {stock_price}')
             print(f'유통비율: {dist_ratio}')
+
+
 
 
